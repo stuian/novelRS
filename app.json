@@ -1,0 +1,33 @@
+{
+  "pages": [
+    "pages/home/home",
+    "pages/billboard/billboard",
+    "pages/user/user"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#66b8c9",
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "小说推荐神器"     
+  },
+  "tabBar": {
+    "color": "#333333",
+    "selectedColor": "#66b8c9",
+    "borderStyle": "black",
+    "list": [{
+      "selectedIconPath": "images/tabBar_icons/selected_like.png",
+      "iconPath": "images/tabBar_icons/like.png",
+      "pagePath": "pages/home/home",
+      "text": "推荐"
+    },{
+      "selectedIconPath": "images/tabBar_icons/selected_billboard.png",
+      "iconPath": "images/tabBar_icons/billboard.png",
+      "pagePath": "pages/billboard/billboard",
+      "text": "榜单"
+    },{
+      "selectedIconPath": "images/tabBar_icons/selected_user.png",
+      "iconPath": "images/tabBar_icons/user.png",
+      "pagePath": "pages/user/user",
+      "text": "我的"
+    }]
+  }
+}
