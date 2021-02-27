@@ -10,10 +10,13 @@ def get_body(url):
     retry_times = 0
     while retry_times < 3:
         try:
-            content = requests.get(url, timeout=10, headers=headers).text
+            response = requests.get(url, timeout=10, headers=headers)
+            content = response.text #.encode('raw_unicode_escape').decode('utf-8')
             return content
         except KeyboardInterrupt:
-            print("KeyboardInterrupt, now_url:", url)
+            print("KeyboardInt"
+                  ""
+                  "errupt, now_url:", url)
             raise
         except:
             retry_times += 1
@@ -30,6 +33,7 @@ class Novel:
         self.style = None
         self.author_url = None
         self.novel_url = None
+        self.novel_img = None
 
 class GetNovel:
     def run(self):
@@ -58,26 +62,34 @@ class GetNovel:
                 # print(novel_info_list)
                 for i, info in enumerate(novel_info_list):
                     if i == 0:
-                        book.novel_author = info.find("a").get_text()
+                        book.novel_author = info.find("a").get_text().encode('raw_unicode_escape').decode("gb18030")
                         book.author_url = info.find("a").attrs["href"]
                     if i == 1:
-                        book.novel_name = info.find("a").get_text()
+                        book.novel_name = info.find("a").get_text().encode('raw_unicode_escape').decode("gb18030")
                         book.novel_url = info.find("a").attrs["href"]
                         book.novel_url = "http://www.jjwxc.net/" + book.novel_url
                     if i == 2:
-                        book.category = info.get_text().strip()
+                        book.category = info.get_text().strip().encode('raw_unicode_escape').decode("gb18030")
                     if i == 3:
-                        book.style = info.get_text().strip()
+                        book.style = info.get_text().strip().encode('raw_unicode_escape').decode("gb18030")
                 novel_html = get_body(book.novel_url)
                 if novel_html == "":
                     raise Exception("Error download init url: %s" % book.novel_url)
-                # book.abstract, book.view, book.label =
-                self.parse_novel(novel_html)
+                print(book.novel_url)
+                book.novel_img,book.abstract, book.view, book.label = self.parse_novel(novel_html)
             count += 1
 
     def parse_novel(self,html):
-        soup = BeautifulSoup(html, "html.parser")
-        print(soup.find("table"))
+        soup = BeautifulSoup(html, "lxml")
+        novel_img = soup.find("div",{"class": "smallreadbody"}).find("img").attrs["src"]
+        novel_info = soup.find("div", {"id": "novelintro"})
+        novel_abstract = novel_info.get_text().encode('raw_unicode_escape').decode("gb18030")
+        # print(novel_abstract.encode('raw_unicode_escape').decode("gb18030"))
+        more_info = soup.find_all("div",{"class": "smallreadbody"})[1]
+        novel_label = more_info.find_all("span")[1].get_text().encode('raw_unicode_escape').decode("gb18030")
+        novel_view = soup.find("ul",{"class": "rightul"}).find_all("li")[1].contents[2]
+        novel_view = novel_view.strip().encode('raw_unicode_escape').decode("gb18030")
+        return novel_img,novel_abstract,novel_view,novel_label
 
 def main():
     books = GetNovel()
